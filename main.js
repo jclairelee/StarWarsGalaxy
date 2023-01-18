@@ -25,6 +25,19 @@ let bgImg,
 let spaceshipX = canvas.width / 2 - 48;
 let spaceshipY = canvas.height - 48;
 
+let bulletList = [];
+function Bullet() {
+  this.x = 0;
+  this.y = 0;
+  this.reset = () => {
+    this.x = spaceshipX + 20;
+    this.y = spaceshipY - 10;
+  };
+  this.update = () => {
+    this.y -= 8;
+  };
+  bulletList.push(this);
+}
 const loadImg = () => {
   bgImg = new Image();
   bgImg.src = "image/galaxyBG.png";
@@ -59,14 +72,22 @@ let keysDown = {};
 const keyboardListener = () => {
   document.addEventListener("keydown", (e) => {
     keysDown[e.key] = true;
-    console.log(keysDown);
   });
   document.addEventListener("keyup", (e) => {
     delete keysDown[e.key];
-    console.log(keysDown);
+
+    if (e.key === " ") {
+      fireBullet();
+    }
+    console.log(bulletList);
   });
 };
 
+const fireBullet = () => {
+  console.log("bulletsout");
+  const b = new Bullet();
+  b.reset();
+};
 const update = () => {
   if ("ArrowRight" in keysDown) {
     //right
@@ -91,16 +112,22 @@ const update = () => {
   if (spaceshipX >= canvas.width - 48) {
     spaceshipX = canvas.width - 48;
   }
+  for (let i = 0; i < bulletList.length; i++) {
+    bulletList[i].update();
+  }
 };
 const renderImg = () => {
   ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
   ctx.drawImage(spaceship, spaceshipX, spaceshipY);
+
+  for (let i = 0; i < bulletList.length; i++) {
+    ctx.drawImage(bullet, bulletList[i].x, bulletList[i].y);
+  }
 };
 
 const main = () => {
   update();
   renderImg();
-  console.log("render image");
   requestAnimationFrame(main);
 };
 
