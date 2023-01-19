@@ -4,18 +4,21 @@ let ctx;
 
 canvas = document.createElement("canvas");
 ctx = canvas.getContext("2d");
-//canvas size 400px X 700px
+
+//canvas size
 canvas.width = 400;
 canvas.height = 700;
 
 document.body.appendChild(canvas);
 
 //Load Images
-let bgImg, galaxyBG, spaceship, spacecraft2, gameOverImg, bullet;
+let bgImg, spaceship, spacecraft2, gameOverImg, bullet;
 let gameOver = false;
 let score = 0;
 let spaceshipX = canvas.width / 2 - 48;
 let spaceshipY = canvas.height - 48;
+let bgSound = new Audio("/sound/starWarsSong.mp3");
+let shootingSound = new Audio("/sound/spaceshipShooting.mp3");
 
 let bulletList = [];
 function Bullet() {
@@ -62,6 +65,7 @@ function Enemy() {
   };
   this.update = () => {
     this.y += 3;
+
     if (this.y >= canvas.height - 48) {
       gameOver = true;
     }
@@ -69,7 +73,7 @@ function Enemy() {
 }
 const loadImg = () => {
   bgImg = new Image();
-  bgImg.src = "image/galaxyBG.webp";
+  bgImg.src = "image/background.jpg";
 
   bullet = new Image();
   bullet.src = "/image/bullet.png";
@@ -94,6 +98,8 @@ const keyboardListener = () => {
     delete keysDown[e.key];
 
     if (e.key === " ") {
+      shootingSound.play();
+      shootingSound.playbackRate = 3.5;
       fireBullet();
     }
   });
@@ -103,6 +109,7 @@ const fireBullet = () => {
   const b = new Bullet();
   b.reset();
 };
+
 const makeEnemy = () => {
   const interval = setInterval(function () {
     let newE = new Enemy();
@@ -112,14 +119,11 @@ const makeEnemy = () => {
 
 const update = () => {
   if ("ArrowRight" in keysDown) {
-    //right
     spaceshipX += 6;
   }
   if ("ArrowLeft" in keysDown) {
-    //left
     spaceshipX -= 6;
   }
-
   if (spaceshipX <= 0) {
     spaceshipX = 0;
   }
@@ -152,19 +156,24 @@ const renderImg = () => {
     ctx.drawImage(spacecraft2, enemyList[i].x, enemyList[i].y);
   }
 };
-
+const playBGM = () => {
+  if (!gameOver) {
+    bgSound.play();
+  }
+};
 const main = () => {
   if (!gameOver) {
     update();
     renderImg();
     requestAnimationFrame(main);
   } else {
-    ctx.drawImage(gameOverImg, 0, 200, 430, 300);
-    return;
+    ctx.drawImage(gameOverImg, 0, 200, 430, 320);
+    bgSound.pause();
   }
 };
 
 loadImg();
+playBGM();
 keyboardListener();
 makeEnemy();
 main();
