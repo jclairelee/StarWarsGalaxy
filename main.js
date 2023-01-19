@@ -11,17 +11,9 @@ canvas.height = 700;
 document.body.appendChild(canvas);
 
 //Load Images
-let bgImg,
-  galaxyBG,
-  spaceship,
-  spacecraft,
-  spacecraft1,
-  spacecraft2,
-  spacecraft3,
-  spacecraft4,
-  gameOverImg,
-  bullet;
-
+let bgImg, galaxyBG, spaceship, spacecraft2, gameOverImg, bullet;
+let gameOver = false;
+let score = 0;
 let spaceshipX = canvas.width / 2 - 48;
 let spaceshipY = canvas.height - 48;
 
@@ -30,17 +22,54 @@ function Bullet() {
   this.x = 0;
   this.y = 0;
   this.reset = () => {
-    this.x = spaceshipX + 20;
+    this.x = spaceshipX + 27;
     this.y = spaceshipY - 10;
+    this.alive = true; //bullet status
+    bulletList.push(this);
   };
   this.update = () => {
     this.y -= 8;
   };
-  bulletList.push(this);
+
+  this.checkDamage = () => {
+    for (i = 0; i < enemyList.length; i++) {
+      if (
+        this.y <= enemyList[i].y &&
+        this.x >= enemyList[i].x &&
+        this.x <= enemyList[i].x + 49
+      ) {
+        score++;
+        this.alive = false;
+        enemyList.splice(i, 1);
+      }
+    }
+  };
+}
+const randomLocation = (min, max) => {
+  const random = Math.floor(Math.random() * (max - min + 1));
+  return random;
+};
+
+let enemyList = [];
+
+function Enemy() {
+  this.x = 0;
+  this.y = 0;
+  this.reset = () => {
+    this.y = 0;
+    this.x = randomLocation(0, canvas.width - 48);
+    enemyList.push(this);
+  };
+  this.update = () => {
+    this.y += 3;
+    if (this.y >= canvas.height - 48) {
+      gameOver = true;
+    }
+  };
 }
 const loadImg = () => {
   bgImg = new Image();
-  bgImg.src = "image/galaxyBG.png";
+  bgImg.src = "image/galaxyBG.webp";
 
   bullet = new Image();
   bullet.src = "/image/bullet.png";
@@ -49,22 +78,10 @@ const loadImg = () => {
   spaceship.src = "image/myShip.png";
 
   gameOverImg = new Image();
-  gameOverImg.src = "image/gameOver.jpeg";
-
-  spacecraft = new Image();
-  spacecraft.src = "image/spacecraft.png";
-
-  spacecraft1 = new Image();
-  spacecraft1.src = "image/spacecraft1.png";
+  gameOverImg.src = "image/gameOver.jpg";
 
   spacecraft2 = new Image();
-  spacecraft2.src = "image/spacecraft2.png";
-
-  spacecraft3 = new Image();
-  spacecraft3.src = "image/spacecraft3.png";
-
-  spacecraft4 = new Image();
-  spacecraft4.src = "image/spacecraft4.png";
+  spacecraft2.src = "image/enemy.png";
 };
 
 //keysPressed contains the kyes that user pressed
@@ -79,15 +96,20 @@ const keyboardListener = () => {
     if (e.key === " ") {
       fireBullet();
     }
-    console.log(bulletList);
   });
 };
 
 const fireBullet = () => {
-  console.log("bulletsout");
   const b = new Bullet();
   b.reset();
 };
+const makeEnemy = () => {
+  const interval = setInterval(function () {
+    let newE = new Enemy();
+    newE.reset();
+  }, 1000);
+};
+
 const update = () => {
   if ("ArrowRight" in keysDown) {
     //right
@@ -97,14 +119,6 @@ const update = () => {
     //left
     spaceshipX -= 6;
   }
-  if ("ArrowUp" in keysDown) {
-    //Up
-    spaceshipY -= 6;
-  }
-  if ("ArrowDown" in keysDown) {
-    //down
-    spaceshipY += 6;
-  }
 
   if (spaceshipX <= 0) {
     spaceshipX = 0;
@@ -113,24 +127,44 @@ const update = () => {
     spaceshipX = canvas.width - 48;
   }
   for (let i = 0; i < bulletList.length; i++) {
-    bulletList[i].update();
+    if (bulletList[i].alive) {
+      bulletList[i].update();
+      bulletList[i].checkDamage();
+    }
+  }
+  for (let i = 0; i < enemyList.length; i++) {
+    enemyList[i].update();
   }
 };
 const renderImg = () => {
   ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
   ctx.drawImage(spaceship, spaceshipX, spaceshipY);
-
+  ctx.fillText(`Score:${score}`, 20, 40);
+  ctx.fillStyle = "white";
+  ctx.font = "30px Arial";
   for (let i = 0; i < bulletList.length; i++) {
-    ctx.drawImage(bullet, bulletList[i].x, bulletList[i].y);
+    if (bulletList[i].alive) {
+      ctx.drawImage(bullet, bulletList[i].x, bulletList[i].y);
+    }
+  }
+
+  for (let i = 0; i < enemyList.length; i++) {
+    ctx.drawImage(spacecraft2, enemyList[i].x, enemyList[i].y);
   }
 };
 
 const main = () => {
-  update();
-  renderImg();
-  requestAnimationFrame(main);
+  if (!gameOver) {
+    update();
+    renderImg();
+    requestAnimationFrame(main);
+  } else {
+    ctx.drawImage(gameOverImg, 0, 200, 430, 300);
+    return;
+  }
 };
 
 loadImg();
 keyboardListener();
+makeEnemy();
 main();
