@@ -6,8 +6,8 @@ canvas = document.createElement("canvas");
 ctx = canvas.getContext("2d");
 
 //canvas size
-canvas.width = 400;
-canvas.height = 700;
+canvas.width = 1000;
+canvas.height = 800;
 
 document.body.appendChild(canvas);
 
@@ -41,7 +41,7 @@ function Bullet() {
         this.x >= enemyList[i].x &&
         this.x <= enemyList[i].x + 49
       ) {
-        score++;
+        score += 1;
         this.alive = false;
         enemyList.splice(i, 1);
       }
@@ -165,15 +165,16 @@ const main = () => {
   if (!gameOver) {
     update();
     renderImg();
+    playBGM();
     requestAnimationFrame(main);
   } else {
-    ctx.drawImage(gameOverImg, 0, 200, 430, 320);
+    ctx.drawImage(gameOverImg, 100, 250, 800, 320);
     bgSound.pause();
   }
 };
 
-loadImg();
 playBGM();
+loadImg();
 keyboardListener();
 makeEnemy();
 main();
