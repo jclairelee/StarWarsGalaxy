@@ -1,69 +1,27 @@
-# StarWarsGalaxy
+# StarWars Galaxy
 
-> This is a star wars themed mini game.
+** mini shooting game. Shoot the enemy before they arrive to the bottom baseline! **
 
-## Table of Contentsa
+### General Information
 
-- [General Info](#general-information)
-- [Technologies Used](#technologies-used)
-- [Features](#features)
-- [Screenshots](#screenshots)
-- [Setup](#setup)
-- [Usage](#usage)
-- [Project Status](#project-status)
-- [Room for Improvement](#room-for-improvement)
-- [Acknowledgements](#acknowledgements)
-- [Contact](#contact)
+This starwars-themed mini game made me to understand how to draw, write and insert images onto the <canvas> element.
 
-## General Information
-
-- This mini game was made with the purpose of getting familiar with HTML Canvas.
-
-## Technologies Used
-
-- HTML Canvas
-- Javascript
-
-## Features
-
-- Sound effects: Background and shooting sound
-- Canvas Key Events
+[Demo](https://clairegame.netlify.app/)
 
 ## Screenshots
 
 ![ScreenShot](./image/shootingGame.jpg)
 
-## Setup
+### Setup
 
-1. In your terminal, Add >>> git clone git@github.com:jclairelee/StarWarsGalaxy.git
-2. Click on Go live present at the bottom of VS code.
-
-## Usage
-
-How does one go about using it?
-Provide various use cases and code examples here.
-
-`write-your-code-here`
-
-## Project Status
-
-Project is: _in progress_ / _complete_ / _no longer being worked on_. If you are no longer working on it, provide reasons why.
+1. Click on Go live present at the bottom of VS code.
 
 ## Room for Improvement
 
-Include areas you believe need improvement / could be improved. Also add TODOs for future development.
-
-Room for improvement:
-
-- "PLAY" button
+- Add "PLAY" start button
 - Spacebar Counter
-
-To do:
-
-- Adjust level of speed based on user performence.
+- different level of speed based on user performence.
 
 ## Acknowledgements
 
 - This project was inspired by [HTML5 Canvas and JavaScript Game Tutorial](https://youtu.be/eI9idPTT0c4).
-
-## Contact
