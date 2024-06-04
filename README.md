@@ -1,12 +1,10 @@
 # StarWars Galaxy
 
-** mini shooting game. Shoot the enemy before they arrive to the bottom baseline! **
-
-### General Information
+Play Rule: Shoot the enemy by pressing the spacebar before they arrive to the bottom baseline!
 
 This starwars-themed mini game made me to understand how to draw, write and insert images onto the <canvas> element.
 
-[Demo](https://clairegame.netlify.app/)
+[Demo Link](https://clairegame.netlify.app/)
 
 ## Screenshots
 
@@ -16,12 +14,11 @@ This starwars-themed mini game made me to understand how to draw, write and inse
 
 1. Click on Go live present at the bottom of VS code.
 
-## Room for Improvement
+### Updates Made
 
-- Add "PLAY" start button
-- Spacebar Counter
-- different level of speed based on user performence.
+- Implemented difficulty levels: "easy", "medium", "hard".
+- Adjusted spawn intervals based on player performance, offering a varied and dynamic gaming experience.
 
-## Acknowledgements
+### Acknowledgements
 
 - This project was inspired by [HTML5 Canvas and JavaScript Game Tutorial](https://youtu.be/eI9idPTT0c4).
