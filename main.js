@@ -7,7 +7,6 @@ function setupCanvas() {
   ctx = canvas.getContext("2d");
   document.body.appendChild(canvas);
   resizeCanvas();
-  return { canvas, ctx };
 }
 
 function resizeCanvas() {
@@ -23,10 +22,9 @@ window.addEventListener("resize", () => {
 setupCanvas();
 
 let currentLevel;
-// Level configurations
 const levelConfig = {
   easy: { enemySpeed: 1, baseInterval: 1800 },
-  medium: { enemySpeed: 2, baseInterval: 1250 },
+  medium: { enemySpeed: 2, baseInterval: 1300 },
   hard: { enemySpeed: 3, baseInterval: 1000 },
 };
 
@@ -50,14 +48,12 @@ function createLevelButtons() {
   });
   document.body.appendChild(btnBox);
 }
+
 function setLevel(level) {
   console.log(`Selected level: ${level}`);
   currentLevel = level;
   const btnBox = document.querySelector(".levelBtns");
   btnBox.remove();
-
-  enemySpeed = levelConfig[level].enemySpeed;
-  baseInterval = levelConfig[level].baseInterval;
 
   startGame();
 }
@@ -72,71 +68,82 @@ let shootingSound = new Audio("/sound/spaceshipShooting.mp3");
 let enemiesKilled = 0;
 let bulletList = [];
 
-function Bullet() {
-  this.x = 0;
-  this.y = 0;
-  this.reset = () => {
+class Bullet {
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.alive = false;
+  }
+
+  reset() {
     this.x = spaceshipX + 27;
     this.y = spaceshipY - 10;
-    //bullet status
     this.alive = true;
     bulletList.push(this);
-  };
+  }
 
-  this.update = () => {
+  update() {
     this.y -= 8;
-  };
+  }
 
-  this.checkDamage = () => {
-    for (i = 0; i < enemyList.length; i++) {
+  checkDamage() {
+    for (let i = 0; i < enemyList.length; i++) {
       const enemy = enemyList[i];
       if (
-        //checking for a collision between the bullet and an enemy.
-        this.y <= enemy.y && //Checks if the bullet's vertical position is at or above the enemy's vertical position.
-        this.x >= enemy.x && //Checks if the bullet's horizontal position is to the right of the enemy's horizontal position.
-        this.x <= enemy.x + 49 && //Checks if the bullet's horizontal position is within the width of the enemy
+        this.y <= enemy.y &&
+        this.x >= enemy.x &&
+        this.x <= enemy.x + 49 &&
         !enemy.hit
       ) {
         score += 5;
         this.alive = false;
-        enemy.hit - true;
+        enemy.hit = true;
         enemyList.splice(i, 1);
         enemiesKilled++;
-        console.log("number of enermiesKilled: ", enemiesKilled);
+        console.log("Number of enemies killed: ", enemiesKilled);
       }
     }
-  };
+  }
 }
 
-const randomLocation = (min, max) => {
-  const random = Math.floor(Math.random() * (max - min + 1));
-  return random;
-};
+class Enemy {
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.hit = false;
+  }
 
-let enemyList = [];
-
-function Enemy() {
-  this.x = 0;
-  this.y = 0;
-  this.hit = false; // New property to track whether the enemy has been hit
-
-  this.reset = () => {
+  reset() {
     this.y = 0;
     this.x = randomLocation(0, canvas.width - 48);
-    this.hit = false; // Reset the hit status when resetting the enemy
+    this.hit = false;
     enemyList.push(this);
-  };
+  }
 
-  this.update = () => {
-    this.y += 3;
+  update() {
+    this.y += levelConfig[currentLevel].enemySpeed;
 
     if (this.y >= canvas.height - 48) {
       gameOver = true;
     }
-  };
+    if (
+      spaceshipX < this.x + 48 &&
+      spaceshipX + 48 > this.x &&
+      spaceshipY < this.y + 48 &&
+      spaceshipY + 48 > this.y
+    ) {
+      gameOver = true;
+    }
+  }
 }
 
-const loadImg = () => {
+const randomLocation = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+let enemyList = [];
+
+const loadImages = () => {
   bgImg = new Image();
   bgImg.src = "image/background.jpg";
 
@@ -153,22 +160,19 @@ const loadImg = () => {
   spacecraft2.src = "image/enemy.png";
 };
 
-let keysDown = {}; // Object to track pressed keys
+let keysDown = {};
 
 const keyboardListener = () => {
   document.addEventListener("keydown", (e) => {
-    keysDown[e.key] = true; // Set the corresponding key as true in the keysDown object
+    keysDown[e.key] = true;
   });
 
-  // Listen for keyup event
   document.addEventListener("keyup", (e) => {
-    delete keysDown[e.key]; // Remove the corresponding key from keysDown object when released
-
-    // If the spacebar is pressed, play a shooting sound, adjust the playback rate, and fire a bullet
+    delete keysDown[e.key];
     if (e.key === " ") {
       shootingSound.play();
       shootingSound.playbackRate = 3.5;
-      fireBullet(); // Assume there's a function called fireBullet() to handle shooting
+      fireBullet();
     }
   });
 };
@@ -180,19 +184,16 @@ const fireBullet = () => {
 
 const makeEnemy = () => {
   if (currentLevel && levelConfig[currentLevel]) {
-    const { enemySpeed, baseInterval } = levelConfig[currentLevel];
-    const spawnInterval = baseInterval || 1200;
+    const { baseInterval } = levelConfig[currentLevel];
+    let spawnInterval = baseInterval || 1200;
 
-    const interval = setInterval(function () {
-      let newE = new Enemy();
+    setInterval(() => {
+      const newE = new Enemy();
       newE.reset();
-
-      // Check if a certain number of enemies have been killed to increase the spawn rate
       if (enemiesKilled % 10 === 0) {
-        spawnInterval = Math.max(500, spawnInterval - 100); // Decrease spawn interval by 100 milliseconds
+        spawnInterval = Math.max(500, spawnInterval - 100);
       }
     }, spawnInterval);
-    console.log(spawnInterval);
   }
 };
 
@@ -209,6 +210,21 @@ const handleGameUpdate = () => {
   if (spaceshipX >= canvas.width - 48) {
     spaceshipX = canvas.width - 48;
   }
+  if ("ArrowUp" in keysDown) {
+    if (spaceshipY > canvas.height / 1.3) {
+      spaceshipY -= 8;
+    }
+  }
+  if ("ArrowDown" in keysDown) {
+    spaceshipY += 8;
+  }
+
+  if (spaceshipY <= 0) {
+    spaceshipY = 0;
+  }
+  if (spaceshipY >= canvas.height - 48) {
+    spaceshipY = canvas.height - 48;
+  }
   for (let i = 0; i < bulletList.length; i++) {
     if (bulletList[i].alive) {
       bulletList[i].update();
@@ -219,61 +235,61 @@ const handleGameUpdate = () => {
     enemyList[i].update();
   }
 };
-const renderImg = () => {
-  // Render background
+
+const renderImages = () => {
   ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
-
-  //Render Player Spaceship
   ctx.drawImage(spaceship, spaceshipX, spaceshipY);
-
-  // Score Display
   ctx.fillText(`Score: ${score}`, 20, 40);
   ctx.fillText(`Level: ${currentLevel}`, canvas.width - 200, 40);
   ctx.fillStyle = "white";
   ctx.font = "30px Arial";
 
-  // Render Bullets
   for (let i = 0; i < bulletList.length; i++) {
     if (bulletList[i].alive) {
       ctx.drawImage(bullet, bulletList[i].x, bulletList[i].y);
     }
   }
-  // Render enemies
+
   for (let i = 0; i < enemyList.length; i++) {
     ctx.drawImage(spacecraft2, enemyList[i].x, enemyList[i].y);
   }
 };
-const playBGM = () => {
+
+const playBackgroundMusic = () => {
   if (!gameOver) {
     bgSound.play();
   }
 };
-const main = () => {
+
+const mainLoop = () => {
   const x = (canvas.width - 800) / 2;
 
   if (!gameOver) {
     handleGameUpdate();
-    renderImg();
-    playBGM();
-    requestAnimationFrame(main);
+    renderImages();
+    playBackgroundMusic();
+    requestAnimationFrame(mainLoop);
   } else {
     ctx.drawImage(gameOverImg, x, 250, 800, 320);
     bgSound.pause();
+    setTimeout(() => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      location.reload();
+    }, 1000);
   }
 };
-// Start the game
+
 function startGame() {
-  playBGM();
-  loadImg();
+  playBackgroundMusic();
+  loadImages();
   keyboardListener();
   makeEnemy();
-  main();
+  mainLoop();
 }
 
-// Initialize the game
-function init() {
+function initializeGame() {
   createLevelButtons();
-  loadImg();
+  loadImages();
 }
 
-init();
+initializeGame();
