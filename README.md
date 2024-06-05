@@ -5,6 +5,7 @@
 Star Wars Galaxy is a classic arcade-style game where players control a spaceship to defeat waves of enemy spacecraft. The rule is to keep the enemy away from the bottom border and avoid getting hit to survive.
 
 [Demo Link](https://clairegame.netlify.app/)
+[Medium Post](https://medium.com/@jclaire/embarking-on-a-galactic-adventure-transforming-my-sons-love-for-star-wars-into-a-captivating-mini-d3e43ab8e983)
 
 ## Screenshots
 
