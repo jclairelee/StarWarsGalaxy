@@ -1,68 +1,64 @@
 # StarWars Galaxy
 
-### Description
+StarWars Galaxy is a classic arcade-style game where players pilot a spaceship to fend off waves of enemy spacecraft. The objective is to prevent enemies from breaching the bottom border and avoid getting hit to survive.
 
-Star Wars Galaxy is a classic arcade-style game where players control a spaceship to defeat waves of enemy spacecraft. The rule is to keep the enemy away from the bottom border and avoid getting hit to survive.
+[Demo live](https://clairegame.netlify.app/) |
+[Medium Post](https://medium.com/@jclaire/embarking-on-a-galactic-adventure-transforming-my-sons-love-for-star-wars-into-a-captivating-mini-d3e43ab8e983) |
+[Claire's Portfolio](https://www.jclairelee.com)
 
-[Demo Link](https://clairegame.netlify.app/)
-[Medium Post](https://medium.com/@jclaire/embarking-on-a-galactic-adventure-transforming-my-sons-love-for-star-wars-into-a-captivating-mini-d3e43ab8e983)
-
-## Screenshots
-
-![ScreenShot](./image/shootingGame.jpg)
+![Screenshot](./image/shootingGame.jpg)
 
 ### Technologies Used
 
 - HTML5 Canvas
-
 - JavaScript
 
 ### Setup
 
-1. Click on `Go live` present at the bottom of VS code.
+To run the game locally:
+
+1. Clone this repository.
+2. Open the project directory in your preferred code editor.
+3. Launch the game by clicking on `Go live` at the bottom of VS Code to preview the game in your browser.
+
+### Difficulty Levels
+
+Choose from three different levels of difficulty before starting the game:
+
+- **Easy**: Slower enemy speed and longer intervals between enemy spawns.
+- **Medium**: Moderate enemy speed and faster spawn intervals.
+- **Hard**: Faster enemy speed and shorter spawn intervals.
+
+The selected difficulty level impacts the game's challenge and pacing, offering varying degrees of difficulty to suit different player skills.
 
 ### Function Flow
 
-```
-1. Canvas Setup:
+1. Canvas Setup: The canvas element is initialized for rendering with event listeners for window resizing.
 
-   The canvas element is created and initialized with a rendering context.
-   Event listeners are added to handle window resizing.
-
-2. Level Selection:
-
-   Players can select the difficulty level (easy, medium, or hard) before starting the game.
-   Level buttons are displayed, and the selected level determines enemy speed and spawn rate.
+2. Level Selection: Players can choose from easy, medium, or hard difficulty levels, influencing enemy speed and spawn rates.
 
 3. Game Initialization:
+   Background music themed from Star Wars is loaded and played. Image assets, including backgrounds, player spaceship, enemy spacecraft, bullets, and game over screens, are loaded.
 
-   Background music is loaded and played.
-   Image assets (background, player spaceship, enemy spacecraft, bullet, game over screen) are loaded.
+5. Game Loop:
 
-4. Game Loop:
+   Continuously updates the game state and renders images on the canvas.
+Handles player input for spaceship movement and firing bullets.
+Spawns enemy spacecraft based on the selected difficulty level.
+Detects collisions between bullets and enemies, as well as collisions with the player spaceship.
+Displays score and level information dynamically.
 
-   The main game loop continuously updates the game state and renders images on the canvas.
-   Player input is processed to move the spaceship and fire bullets.
-   Enemy spacecraft are spawned at regular intervals based on the selected level.
-   Collision detection is performed to check for bullet-enemy and player-enemy collisions.
-   Score and level information is displayed on the screen.
+6. Game Over:
+   Ends the game if the player's spaceship is hit by an enemy or an enemy breaches the bottom border.
+Displays a game over screen and pauses background music.
 
-5. Game Over:
-
-   Game ends if player spaceship hits enemy or an enemy reaches bottom. Displays game over screen, pauses music.
-
-6. Restarting the Game:
-
-   when it's over, it briefly displays the game over image before automatically reloading.
-```
+6. Restarting the Game: Automatically restarts the game after displaying the game over screen briefly.
 
 ### Credits
 
 - This project was inspired by [HTML5 Canvas and JavaScript Game Tutorial](https://youtu.be/eI9idPTT0c4).
 - Background Music: Star Wars Theme Song
 - Sound Effects: Spaceship Shooting Sound
-- Image Assets: Starwars characters from Google Image
+- Image Assets: Star Wars characters sourced from Google Images
 
-```
 
-```
